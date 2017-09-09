@@ -7,7 +7,7 @@ public class MovementController : MonoBehaviour {
     public KeyCode moveUp,
         moveDown;
 
-    public float speed = 10.0f;
+    public float speed = 20.0f;
 
     public Vector2 initialPos = new Vector2(-13.0f, 0.0f);
 
@@ -15,38 +15,42 @@ public class MovementController : MonoBehaviour {
 
     void Start()
     {
-        move = new Vector2(0, 0);
+        move = new Vector2(0, speed);
     }
 
     void Update () {
 
         if (Input.GetKey(moveUp)) //moves up
         {
-            if (transform.localPosition.y > PongSetup.TOP_BOUNDS)
+            move.y = speed;
+            /*
+            if (transform.localPosition.y >= PongSetup.getTopBounds())
             {
-                transform.localPosition = new Vector2(transform.localPosition.x, PongSetup.TOP_BOUNDS);
+                transform.localPosition = new Vector2(transform.localPosition.x, PongSetup.getTopBounds());
             }
             else
             {
-                move.y = speed * Time.deltaTime;
-            }
-            
+                move.y = speed * Time.deltaTime;            
+            }*/
         }else if (Input.GetKey(moveDown)) //move down
         {
-            if (transform.localPosition.y < PongSetup.BOTTOM_BOUNDS)
+            move.y = speed * -1f;
+            /*
+            if (transform.localPosition.y <= PongSetup.getBottomBounds())
             {
-                transform.localPosition = new Vector2(transform.localPosition.x, PongSetup.BOTTOM_BOUNDS);
+                transform.localPosition = new Vector2(transform.localPosition.x, PongSetup.getBottomBounds());
             }
             else
             {
                 move.y = -speed * Time.deltaTime;
-            }
+            }*/
         }
         else
         {
             move.y = 0;
         }
 
-        transform.Translate(move);
-	}
+        GetComponent<Rigidbody2D>().velocity = move;
+        //transform.Translate(move);
+    }
 }

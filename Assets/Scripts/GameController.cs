@@ -19,14 +19,7 @@ public class GameController : MonoBehaviour
     }
 
     void SpawnBall() { 
-    
-        try{
             ball = GameObject.Instantiate((GameObject)Resources.Load("Prefabs/ball", typeof(GameObject)));
-            ball.transform.localPosition = new Vector3(0, -2.5f, 0);
-        }
-        catch(Exception e){
-            print("exception: " + e.Message.ToString());
-        }
-      
+            ball.transform.localPosition = new Vector3(0f, 0f, 0f);
     }
 }
