@@ -14,9 +14,8 @@ public class PongSetup : MonoBehaviour {
 
 	void Start () {
 
-        topBound = mainCamera.ScreenToWorldPoint(new Vector3(0f, Screen.height, 0f)).y - 4f;
-        bottomBound = (mainCamera.ScreenToWorldPoint(new Vector3(0f, Screen.height, 0f)).y  *  -1f) + 4f;
-        print(bottomBound);
+        //topBound = mainCamera.ScreenToWorldPoint(new Vector3(0f, Screen.height, 0f)).y - 4f;
+        //bottomBound = (mainCamera.ScreenToWorldPoint(new Vector3(0f, Screen.height, 0f)).y  *  -1f) + 4f;
 
         //move each boundary to the edge location of the screen
         northBoundary.size = new Vector2(mainCamera.ScreenToWorldPoint(new Vector3(Screen.width * 2f, 0f, 0f)).x, 1f);
