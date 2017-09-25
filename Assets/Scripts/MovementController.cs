@@ -19,38 +19,35 @@ public class MovementController : MonoBehaviour {
     }
 
     void Update () {
-
         if (Input.GetKey(moveUp)) //moves up
         {
             move.y = speed;
-            /*
-            if (transform.localPosition.y >= PongSetup.getTopBounds())
-            {
-                transform.localPosition = new Vector2(transform.localPosition.x, PongSetup.getTopBounds());
-            }
-            else
-            {
-                move.y = speed * Time.deltaTime;            
-            }*/
+            
         }else if (Input.GetKey(moveDown)) //move down
         {
             move.y = speed * -1f;
-            /*
-            if (transform.localPosition.y <= PongSetup.getBottomBounds())
-            {
-                transform.localPosition = new Vector2(transform.localPosition.x, PongSetup.getBottomBounds());
-            }
-            else
-            {
-                move.y = -speed * Time.deltaTime;
-            }*/
         }
         else
         {
             move.y = 0;
         }
+        
+        /*
+        float translation = Input.GetAxis("Vertical") * speed;
+
+        if(translation > 0)
+        {
+            move.y = speed;
+        }else if(translation < 0)
+        {
+            move.y = -speed;
+        }
+        else
+        {
+            move.y = 0;
+        }
+        */
 
         GetComponent<Rigidbody2D>().velocity = move;
-        //transform.Translate(move);
     }
 }

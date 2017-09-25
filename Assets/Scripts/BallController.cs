@@ -25,7 +25,7 @@ public class BallController : MonoBehaviour
         }
     }
 
-    public IEnumerator SesetBallPosition()
+    public IEnumerator ResetBallPosition()
     {
         GetComponent<Rigidbody2D>().velocity = new Vector2();
         transform.position = new Vector3(0 , 0);
@@ -43,9 +43,6 @@ public class BallController : MonoBehaviour
             GetComponent<Rigidbody2D>().velocity = newPath;
         }
     }
-
-
-
 
 
 }

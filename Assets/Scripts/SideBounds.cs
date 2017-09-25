@@ -8,11 +8,11 @@ public class SideBounds : MonoBehaviour {
     private void OnTriggerEnter2D(Collider2D hitInfo)
     {
 
-        if (hitInfo.name.Contains("Ball"))
+        if (hitInfo.name.Contains("ball"))
         {
             String sideName = transform.name;
             GameController.Score(sideName);
-            hitInfo.gameObject.SendMessage("SesetBallPosition");
+            hitInfo.gameObject.SendMessage("ResetBallPosition");
         }
     }
 }
