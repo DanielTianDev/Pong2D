@@ -1883,6 +1883,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   winScore: 3
   skin: {fileID: 11400000, guid: c9fc4e14e8b388f44b089ac69ec9abbe, type: 2}
+  ball: {fileID: 1350857678771656, guid: 4a3d3473ae597bb43aafd4e165868710, type: 2}
   player1: {fileID: 697747950}
   player2: {fileID: 2969619}
   btnHuman: {fileID: 558175755}
