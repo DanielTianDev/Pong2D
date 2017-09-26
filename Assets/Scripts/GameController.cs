@@ -12,9 +12,11 @@ public class GameController : MonoBehaviour
     public int winScore = 3;
 
     private bool isGameActive = false;
-
+    public Camera mainCamera;
     public GUISkin skin;
     public GameObject ball, player1, player2;
+    private MovementController player2MovementController; //player2 can also subsitute for the ai. However, the movement controls must be disabled if playing vs ai
+    private AI_Move player2AIController;
 
     private GameObject currentBall;
 
@@ -25,6 +27,10 @@ public class GameController : MonoBehaviour
     void Start()
     {
         SetLobbyUI(true); //is in lobby
+        player2MovementController = player2.GetComponent<MovementController>();
+        player2AIController = player2.GetComponent<AI_Move>();
+        player1.SetActive(false);
+        player2.SetActive(false);
     }
 
     //if  true, returns to lobby. if not then the game ui will be displayed.
@@ -38,12 +44,15 @@ public class GameController : MonoBehaviour
     public void QuitGame()
     {
         Destroy(currentBall);
+        player1.transform.localPosition = new Vector2(mainCamera.ScreenToWorldPoint(new Vector3(125f, 0f, 0f)).x, player1.transform.localPosition.y); //reset player positions
+        player2.transform.localPosition = new Vector2(mainCamera.ScreenToWorldPoint(new Vector3(Screen.width - 125f, 0f, 0f)).x, player2.transform.localPosition.y);
         SetLobbyUI(true); //back to lobby
         playerScore1 = 0;
         playerScore2 = 0;
         player1.SetActive(false);
         player2.SetActive(false);
         isGameActive = false;
+        player2MovementController.enabled = true;
     }
 
     public void StartGame()
@@ -57,12 +66,15 @@ public class GameController : MonoBehaviour
     public void StartPlayerVsPlayer()
     {
         StartGame();
+        player2AIController.enabled = false;
         InstantiateBall();
     }
 
     public void StartPlayerVsAI()
     {
         StartGame();
+        player2MovementController.enabled = false;
+        player2AIController.enabled = true;
         InstantiateBall();
     }
 
@@ -100,7 +112,6 @@ public class GameController : MonoBehaviour
     private void Update()
     {
         isGameWon();
-        print("p1: " + playerScore1 + " p2: " + playerScore2);
     }
 
     public void isGameWon()
@@ -117,7 +128,15 @@ public class GameController : MonoBehaviour
 
     IEnumerator GameWon(int playerNum)
     {
-        statusText.text = "Player " + playerNum + " has won!";
+        
+        if(playerScore2> playerScore1 && player2AIController.enabled)
+        {
+            statusText.text = "computer wins!";
+        }
+        else
+        {
+            statusText.text = "Player " + playerNum + " has won!";
+        }
         yield return new WaitForSeconds(3.0f);
         statusText.text = "";
         QuitGame();
