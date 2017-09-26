@@ -86,7 +86,7 @@ public class GameController : MonoBehaviour
         {
             GUI.skin = this.skin;
             GUI.Label(new Rect(Screen.width / 2 - 150 - 12, 20, 100, 100), "P1: " + playerScore1);
-            GUI.Label(new Rect(Screen.width / 2 + 150 + 12, 20, 100, 100), "P1: " + playerScore2);
+            GUI.Label(new Rect(Screen.width / 2 + 150 + 12, 20, 100, 100), "P2: " + playerScore2);
         }
     }
 
