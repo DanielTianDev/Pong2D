@@ -1,16 +1,27 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
+/** 
+  * @desc This class sets up the boundaries of the game
+  * examples Start()
+  * @author Daniel Tian
+  * @version September 25, 2017
+  * @required none
+*/
 public class PongSetup : MonoBehaviour {
 
+    //reference to the main camera
     public Camera mainCamera;
 
+    //reference to the 4 boundaries that contain the game via box colliders
     public BoxCollider2D northBoundary, eastBoundary, southBoundary, westBoundary;
 
+    //reference to the transforms of players 1 and 2
     public Transform player1, player2;
 
-	void Start () {
+    /**
+      * @desc - This method gets called just before any of the Update methods is called
+    */
+    void Start () {
 
         //move each boundary to the edge location of the screen
         northBoundary.size = new Vector2(mainCamera.ScreenToWorldPoint(new Vector3(Screen.width * 2f, 0f, 0f)).x, 1f);

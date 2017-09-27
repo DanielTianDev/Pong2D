@@ -1,30 +1,68 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using System;
 
-//controls the game
-
+/** 
+  * @desc This class contains the methods to control the state of the game, such as switching
+  * between lobby and different game modes, and calculating the score to determine if a player has won or not.
+  * examples SetLobbyUI(bool), StartPlayerVsPlayer(), StartPlayerVsAI(), QuitGame(), InstantiateBall(),
+  * IsGameWon(), GameWon()
+  * @author Daniel Tian
+  * @version September 25, 2017
+  * @required none
+*/
 public class GameController : MonoBehaviour
 {
+    #region Game state data 
+
+    //*********************//
+    // Public member data  //
+    //*********************//
+
+    //variables that contain the scores of both players (or the ai, which in this case is player 2)
     public static int playerScore1 = 0,
         playerScore2 = 0;
+
+    //bool indicating whether the game is in session or not
+    public static bool isGameActive = false;
+
+    //an integer which dictates how many points are required in order to win the game
     public int winScore = 3;
 
-    private bool isGameActive = false;
+    //reference too the main camera
     public Camera mainCamera;
+
+    //a reference to the gui skin
     public GUISkin skin;
+
+    //Reference to the ball prefab, players 1 and 2
     public GameObject ball, player1, player2;
-    private MovementController player2MovementController; //player2 can also subsitute for the ai. However, the movement controls must be disabled if playing vs ai
-    private AI_Move player2AIController;
 
-    private GameObject currentBall;
-
-    //UI control
+    //A reference to the buttons so that we can control the ui within our code
     public Button btnHuman, btnComputer, btnQuit;
+
+    //text indicating the status of the game
     public Text statusText;
 
-    void Start()
+    //*********************//
+    // Private member data //
+    //*********************//
+
+    //player2 can also subsitute for the ai. However, the movement controls must be disabled if playing vs ai
+    private MovementController player2MovementController; 
+
+    //A reference to the ai movement controller script
+    private AI_Move player2AIController;
+
+    //A reference to the ball currently in play
+    private GameObject currentBall;
+
+    #endregion  
+
+    /**
+      * @desc - This method gets called just before any of the Update methods is called
+    */
+    private void Start()
     {
         SetLobbyUI(true); //is in lobby
         player2MovementController = player2.GetComponent<MovementController>();
@@ -33,19 +71,39 @@ public class GameController : MonoBehaviour
         player2.SetActive(false);
     }
 
-    //if  true, returns to lobby. if not then the game ui will be displayed.
-    void SetLobbyUI(bool isVisible)
+    /**
+      * @desc - Unity gameloop, updates are dependent on computer speed
+    */
+    private void Update()
+    {
+        IsGameWon();
+
+        if (Input.GetKeyDown(KeyCode.Space) && !isGameActive)
+        {
+            StartPlayerVsAI();
+        }
+    }
+
+    #region Game state management
+
+    /**
+      * @desc changes the game state from lobby to an active game, in player versus computer mode
+      * @return - void
+    */
+    private void SetLobbyUI(bool isVisible)
     {
         btnHuman.gameObject.SetActive(isVisible);
         btnComputer.gameObject.SetActive(isVisible);
         btnQuit.gameObject.SetActive(!isVisible);
     }
 
-    public void QuitGame()
+    /**
+      * @desc changes the game state to the lobby, after resetting the game
+      * @return - void
+    */
+    private void QuitGame()
     {
         Destroy(currentBall);
-        player1.transform.localPosition = new Vector2(mainCamera.ScreenToWorldPoint(new Vector3(125f, 0f, 0f)).x, player1.transform.localPosition.y); //reset player positions
-        player2.transform.localPosition = new Vector2(mainCamera.ScreenToWorldPoint(new Vector3(Screen.width - 125f, 0f, 0f)).x, player2.transform.localPosition.y);
         SetLobbyUI(true); //back to lobby
         playerScore1 = 0;
         playerScore2 = 0;
@@ -55,6 +113,10 @@ public class GameController : MonoBehaviour
         player2MovementController.enabled = true;
     }
 
+    /**
+      * @desc changes the game ui from lobby to an active game, and sets the players to the active state
+      * @return - void
+    */
     public void StartGame()
     {
         SetLobbyUI(false);
@@ -63,6 +125,10 @@ public class GameController : MonoBehaviour
         player2.SetActive(true);
     }
 
+    /**
+      * @desc changes the game state from lobby to an active game, in player versus player mode
+      * @return - void
+    */
     public void StartPlayerVsPlayer()
     {
         StartGame();
@@ -70,6 +136,10 @@ public class GameController : MonoBehaviour
         InstantiateBall();
     }
 
+    /**
+      * @desc changes the game state from lobby to an active game, in player versus computer mode
+      * @return - void
+    */
     public void StartPlayerVsAI()
     {
         StartGame();
@@ -78,26 +148,12 @@ public class GameController : MonoBehaviour
         InstantiateBall();
     }
 
-
-
-    private void OnGUI()
-    {
-        if (isGameActive)
-        {
-            GUI.skin = this.skin;
-            GUI.Label(new Rect(Screen.width / 2 - 150 - 12, 20, 100, 100), "P1: " + playerScore1);
-            GUI.Label(new Rect(Screen.width / 2 + 150 + 12, 20, 100, 100), "P2: " + playerScore2);
-        }
-    }
-
-
-    void InstantiateBall() {
-        //ball = GameObject.Instantiate((GameObject)Resources.Load("Prefabs/ball", typeof(GameObject)));
-        currentBall = Instantiate(ball);
-        ball.transform.localPosition = new Vector3(0f, 0f, 0f);
-    }
-
-    public static void Score(String wallName)
+    /**
+     * @desc called when the ball collides with the left or right wall, and updates the player's scores appropriately
+     * @param string wallName - the name of the wall that the ball has collided with
+     * @return - void
+   */
+    public static void Score(string wallName)
     {
         if (wallName == "rightCollider")
         {
@@ -109,12 +165,12 @@ public class GameController : MonoBehaviour
         }
 
     }
-    private void Update()
-    {
-        isGameWon();
-    }
 
-    public void isGameWon()
+    /**
+      * @desc Checks if a game has been won by comparing the scores of 2 players
+      * @return - void
+    */
+    public void IsGameWon()
     {
         if (playerScore1 >= winScore)
         {
@@ -126,10 +182,16 @@ public class GameController : MonoBehaviour
         }
     }
 
+
+    /**
+      * @desc executes the game over sequence: displays who won in text, and then quits game
+      * therefore returning to the lobby
+      * @return - The yield return value specifies when the coroutine is resumed
+    */
     IEnumerator GameWon(int playerNum)
     {
-        
-        if(playerScore2> playerScore1 && player2AIController.enabled)
+
+        if (playerScore2 > playerScore1 && player2AIController.enabled)
         {
             statusText.text = "computer wins!";
         }
@@ -140,6 +202,31 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(3.0f);
         statusText.text = "";
         QuitGame();
+    }
+
+    #endregion
+
+    /**
+      * @desc updates the gui multiple times per second
+      * @return - void
+    */
+    private void OnGUI()
+    {
+        if (isGameActive)
+        {
+            GUI.skin = skin;
+            GUI.Label(new Rect(Screen.width / 2 - 150 - 12, 20, 100, 100), "P1: " + playerScore1);
+            GUI.Label(new Rect(Screen.width / 2 + 150 + 12, 20, 100, 100), "P2: " + playerScore2);
+        }
+    }
+
+    /**
+      * @desc spawns the ball at the middle of the game space
+      * @return - void
+    */
+    private void InstantiateBall() {
+        currentBall = Instantiate(ball);
+        ball.transform.localPosition = new Vector3(0f, 0f, 0f);
     }
 
 }
